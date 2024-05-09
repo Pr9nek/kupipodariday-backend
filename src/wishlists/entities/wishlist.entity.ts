@@ -5,6 +5,8 @@ import {
   ManyToMany,
   ManyToOne,
   JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Wish } from '../../wishes/entities/wish.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -14,6 +16,12 @@ import { IsString, Length, IsOptional } from 'class-validator';
 export class Wishlist {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @Column({ length: 250 })
   @IsString()
