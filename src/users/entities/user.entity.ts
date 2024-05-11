@@ -42,6 +42,7 @@ export class User {
   about: string;
 
   @Column({ default: 'https://i.pravatar.cc/300' })
+  @IsOptional()
   @IsUrl()
   avatar: string;
 

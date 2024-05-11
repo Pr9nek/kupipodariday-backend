@@ -15,7 +15,6 @@ import { RequesthUser } from 'src/types/types';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -25,6 +24,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(JwtGuard)
   @Get('me')
   getUser(@Req() req: RequesthUser) {
     return this.usersService.findOne({ where: { id: req.user.id } });
@@ -37,7 +37,6 @@ export class UsersController {
   ) {
     return this.usersService.updateOne(req.user.id, updateUserDto);
   }
-  
   @Get(':username')
   async getUserByUsername(@Param('username') username: string) {
     const user = await this.usersService.findByUsername(username);
