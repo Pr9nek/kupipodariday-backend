@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { CONFLICT_ERR } from '../constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FindUsersDto } from './dto/find-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +39,22 @@ export class UsersService {
 
   async findOne(query: FindOneOptions<User>): Promise<User> {
     return this.userRepository.findOne(query);
+  }
+
+  async findMany(query: string) {
+    return this.userRepository.find({
+      where: [{ email: query }, { username: query }],
+    });
+  }
+
+  async findByUsernameOrEmail(findUserDto: FindUsersDto) {
+    const { query } = findUserDto;
+    const user = await this.findMany(query);
+    if (!user) {
+      return;
+    }
+    delete user[0].password;
+    return user;
   }
 
   async updateOne(id: number, updateUserDto: UpdateUserDto): Promise<User> {

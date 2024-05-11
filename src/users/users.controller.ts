@@ -1,5 +1,6 @@
 import {
   Controller,
+  Header,
   Get,
   Post,
   Body,
@@ -11,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FindUsersDto } from './dto/find-user.dto';
 import { RequesthUser } from 'src/types/types';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -27,7 +29,14 @@ export class UsersController {
   @UseGuards(JwtGuard)
   @Get('me')
   getUser(@Req() req: RequesthUser) {
-    return this.usersService.findOne({ where: { id: req.user.id } });
+    // return this.usersService.findOne({ where: { id: req.user.id } });
+    return req.user;
+  }
+
+  @Post('find')
+  @Header('Content-Type', 'application/json')
+  async findUserByEmailOrUserName(@Body() findUserDto: FindUsersDto) {
+    return this.usersService.findByUsernameOrEmail(findUserDto);
   }
 
   @Patch('me')
@@ -37,6 +46,7 @@ export class UsersController {
   ) {
     return this.usersService.updateOne(req.user.id, updateUserDto);
   }
+
   @Get(':username')
   async getUserByUsername(@Param('username') username: string) {
     const user = await this.usersService.findByUsername(username);
