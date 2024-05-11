@@ -1,5 +1,5 @@
 import { User } from 'src/users/entities/user.entity';
 
-export interface RequesthUser extends Request {
+export interface RequestUser extends Request {
   user: User;
 }

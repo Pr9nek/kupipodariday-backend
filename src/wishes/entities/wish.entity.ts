@@ -16,6 +16,7 @@ import {
   Min,
   Length,
   IsString,
+  IsPositive,
 } from 'class-validator';
 import { User } from '../../users/entities/user.entity';
 import { Offer } from '../../offers/entities/offer.entity';
@@ -50,13 +51,12 @@ export class Wish extends BaseEntity {
   @Column('decimal', { precision: 10, scale: 2 })
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
+  @IsPositive()
   price: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, default: 0 })
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
   raised: number;
 
   @ManyToOne(() => User, (user) => user.wishes)
