@@ -1,9 +1,9 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HashService } from 'src/hash/hash.service';
+import { HashService } from '../hash/hash.service';
 import { QueryFailedError, Repository, FindOneOptions } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CONFLICT_ERR } from 'src/constants';
+import { CONFLICT_ERR } from '../constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
