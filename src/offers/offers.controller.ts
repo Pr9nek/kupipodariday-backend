@@ -27,6 +27,11 @@ export class OffersController {
 
   @Get()
   getOffers() {
-    return this.offersService.findOffers();
+    return this.offersService.getOffers();
+  }
+
+  @Get(':id')
+  async getById(@Param('id') id: string) {
+    return this.offersService.getById(Number(id));
   }
 }

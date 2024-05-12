@@ -8,7 +8,6 @@ import { Repository } from 'typeorm';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { Offer } from './entities/offer.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Wish } from 'src/wishes/entities/wish.entity';
 import { WishesService } from 'src/wishes/wishes.service';
 
 @Injectable()
@@ -69,29 +68,109 @@ export class OffersService {
 
     return this.offerRepository.save(offer);
   }
-  async findOffers() {
+  async getOffers() {
     const offersArr = await this.offerRepository.find({
-      relations: {
-        item: { offers: true, owner: true },
-        user: {
-          offers: { item: true },
-          wishes: { offers: true, owner: true },
-          wishlists: true,
-        },
-      },
+      relations: [
+        'item',
+        'item.owner',
+        'item.offers',
+        'user',
+        'user.wishes',
+        'user.wishes.owner',
+        'user.offers',
+        'user.wishlists',
+        'user.wishlists.owner',
+        'user.wishlists.items',
+      ],
     });
 
     offersArr.forEach((offer) => {
-      offer.amount = Number(offer.amount);
+      offer.user?.wishes.forEach((wish) => (wish.price = Number(wish.price)));
+      offer.item.offers.forEach((offer) => {
+        offer.amount = Number(offer.amount);
+      });
       offer.item.price = Number(offer.item.price);
+      offer.item.raised = Number(offer.item.raised);
+      offer.item.offers.forEach((offer) => {
+        offer.amount = Number(offer.amount);
+      });
+      offer.user?.wishes.forEach((wish) => {
+        wish.price = Number(wish.price);
+        wish.raised = Number(wish.raised);
+      });
+      offer.user?.wishlists.forEach((wishlist) => {
+        delete wishlist.owner.email;
+        delete wishlist.owner.password;
+        wishlist.items.forEach((item) => {
+          item.price = Number(item.price);
+          item.raised = Number(item.raised);
+        });
+      });
+      delete offer.amount;
+      delete offer.hidden;
       delete offer.item.owner.email;
       delete offer.item.owner.password;
-      offer.user?.wishes.forEach((wish) => (wish.price = Number(wish.price)));
-      
+      offer.user?.wishes.forEach((wish) => {
+        delete wish.owner.email;
+        delete wish.owner.password;
+      });
       // delete offer.user.email;
       // delete offer.user.password;
     });
+    
 
     return offersArr;
+  }
+
+  async getById(id: number) {
+    const offer = await this.offerRepository.findOne({
+      relations: [
+        'item',
+        'item.owner',
+        'item.offers',
+        'user',
+        'user.wishes',
+        'user.wishes.owner',
+        'user.offers',
+        'user.wishlists',
+        'user.wishlists.owner',
+        'user.wishlists.items',
+      ],
+      where: {
+        id,
+      },
+    });
+
+    if (!offer) {
+      throw new NotFoundException();
+    }
+    offer.item.price = Number(offer.item.price);
+    offer.item.raised = Number(offer.item.raised);
+    offer.item.offers.forEach((offer) => {
+      offer.amount = Number(offer.amount);
+    });
+    offer.user.wishes.forEach((wish) => {
+      wish.price = Number(wish.price);
+      wish.raised = Number(wish.raised);
+    });
+    offer.user.wishlists.forEach((wishlist) => {
+      delete wishlist.owner.email;
+      delete wishlist.owner.password;
+      wishlist.items.forEach((item) => {
+        item.price = Number(item.price);
+        item.raised = Number(item.raised);
+      });
+    });
+    delete offer.amount;
+    delete offer.hidden;
+    delete offer.item.owner.email;
+    delete offer.item.owner.password;
+    delete offer.user.email;
+    delete offer.user.password;
+    offer.user.wishes.forEach((wish) => {
+      delete wish.owner.email;
+      delete wish.owner.password;
+    });
+    return offer;
   }
 }
