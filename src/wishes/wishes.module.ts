@@ -11,7 +11,7 @@ import { OffersModule } from 'src/offers/offers.module';
     TypeOrmModule.forFeature([Wish]),
     forwardRef(() => UsersModule),
     forwardRef(() => OffersModule),
-],
+  ],
   providers: [WishesService],
   controllers: [WishesController],
   exports: [WishesService],

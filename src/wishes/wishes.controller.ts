@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -25,13 +24,6 @@ export class WishesController {
     return this.wishesService.create(req.user, createWishDto);
   }
 
-//   @UseGuards(JwtGuard)
-//   @Get()
-//   findAll() {
-//     return this.wishesService.find({
-//       relations: { owner: true, offers: true },
-//     });
-//   }
   @Get('/last')
   findLast() {
     return this.wishesService.findLast();

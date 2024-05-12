@@ -117,7 +117,6 @@ export class OffersService {
       // delete offer.user.email;
       // delete offer.user.password;
     });
-    
 
     return offersArr;
   }

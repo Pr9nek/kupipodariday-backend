@@ -1,11 +1,8 @@
 import {
   Controller,
   Body,
-  Delete,
   Get,
   Param,
-  ParseIntPipe,
-  Patch,
   Post,
   Req,
   UseGuards,
