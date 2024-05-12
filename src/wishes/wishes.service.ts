@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, Repository, FindManyOptions } from 'typeorm';
 import { Wish } from './entities/wish.entity';
 import { User } from 'src/users/entities/user.entity';
 import { CreateWishDto } from './dto/create-wish.dto';
@@ -28,6 +28,14 @@ export class WishesService {
   }
 
   async find(query: FindOneOptions<Wish>) {
+    return this.wishesRepository.find(query);
+  }
+
+  async findOne(query: FindOneOptions<Wish>) {
+    return this.wishesRepository.findOne(query);
+  }
+
+  async findMany(query: FindManyOptions<Wish>) {
     return this.wishesRepository.find(query);
   }
 
